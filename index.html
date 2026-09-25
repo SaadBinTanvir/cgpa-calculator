@@ -459,6 +459,12 @@
             <strong>
                 CGPA = Σ(Grade Point × Credit Hours) ÷ Σ(Credit Hours)
             </strong>
+            <br><br>
+            <span class="small-text">
+                The displayed result is rounded to two decimal places using
+                half-up rounding: a third decimal digit of 5 or greater
+                increases the second decimal digit by 1.
+            </span>
         </div>
 
         <p class="note">
@@ -631,7 +637,7 @@
                 <input
                     type="text"
                     class="course-name"
-                    placeholder="e.g. ABC101"
+                    placeholder="e.g. CSE221"
                     aria-label="Course name"
                 >
             </div>
@@ -733,10 +739,30 @@
             }
         });
 
-        const cgpa =
+        const rawCGPA =
             totalCredits > 0
                 ? totalQualityPoints / totalCredits
                 : 0;
+
+        /*
+         * Explicit half-up rounding for the displayed GPA/CGPA.
+         *
+         * If the 3rd decimal digit is 5 or greater, the 2nd decimal
+         * digit increases by 1. For example: 3.575 -> 3.58.
+         *
+         * A small tolerance compensates for JavaScript binary floating-
+         * point representation around exact .005 boundaries.
+         */
+        function roundHalfUp(value, decimalPlaces = 2) {
+            const factor = 10 ** decimalPlaces;
+            const scaled = value * factor;
+            const roundedInteger =
+                Math.floor(scaled + 0.5 + 1e-9);
+
+            return roundedInteger / factor;
+        }
+
+        const cgpa = roundHalfUp(rawCGPA, 2);
 
         enteredCreditsOutput.textContent =
             totalCredits.toFixed(2);
