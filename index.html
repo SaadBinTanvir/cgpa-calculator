@@ -1,457 +1,818 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CGPA Calculator</title>
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fb;
-    color: #1f2937;
-    line-height: 1.6;
-}
+    <title>BRACU CGPA Calculator | BRAC University CGPA Calculator</title>
+    <meta name="description" content="Calculate your BRAC University CGPA accurately using course credit hours and grade points. Includes 1.5-credit labs and other fractional-credit courses.">
+    <meta name="keywords" content="BRACU CGPA calculator, BRAC University CGPA calculator, BRACU GPA calculator, BRAC University GPA calculator">
+    <meta name="author" content="BRACU CGPA Calculator">
 
-.container {
-    width: min(100% - 32px, 900px);
-    margin: auto;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #172033;
+            --muted: #657084;
+            --border: #d9dee8;
+            --primary: #155eef;
+            --primary-dark: #1247b9;
+            --danger-bg: #fff0f0;
+            --danger: #c62828;
+            --success-bg: #edf9f0;
+            --success: #18794e;
+            --dark: #101828;
+        }
 
-/* Header */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-.header {
-    background: #111827;
-    color: white;
-    padding: 50px 0;
-    text-align: center;
-}
+        .container {
+            width: min(100% - 32px, 980px);
+            margin: 0 auto;
+        }
 
-.header h1 {
-    font-size: 2.3rem;
-    margin-bottom: 10px;
-}
+        .header {
+            background: var(--dark);
+            color: #ffffff;
+            padding: 52px 0 44px;
+        }
 
-.header p {
-    color: #d1d5db;
-}
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
 
+        .header p {
+            color: #c7ced9;
+            max-width: 700px;
+        }
 
-/* Cards */
+        .card,
+        .result-card {
+            background: var(--card);
+            border: 1px solid #e7eaf0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 8px 25px rgba(16, 24, 40, 0.05);
+        }
 
-.card,
-.result-card {
-    background: white;
-    border-radius: 14px;
-    padding: 25px;
-    margin-top: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
+        .card h2,
+        .result-card h2 {
+            margin-bottom: 8px;
+        }
 
-.card h2,
-.result-card h2 {
-    margin-bottom: 8px;
-}
+        .description {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
 
-.section-description {
-    color: #6b7280;
-    margin-bottom: 20px;
-}
+        .note {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: #f7f9fc;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            color: var(--muted);
+            font-size: 0.94rem;
+        }
 
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            max-width: 480px;
+        }
 
-/* Inputs */
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
 
-.input-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
+        input,
+        select {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #ffffff;
+            color: var(--text);
+            font-size: 1rem;
+        }
 
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 7px;
-}
+        input:focus,
+        select:focus {
+            outline: 3px solid rgba(21, 94, 239, 0.15);
+            border-color: var(--primary);
+        }
 
-input,
-select {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 1rem;
-}
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
 
-input:focus,
-select:focus {
-    outline: 2px solid #2563eb;
-    border-color: transparent;
-}
+        button {
+            border: 0;
+            border-radius: 9px;
+            min-height: 42px;
+            padding: 10px 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
+        .primary-button {
+            background: var(--primary);
+            color: #ffffff;
+        }
 
-/* Section header */
+        .primary-button:hover {
+            background: var(--primary-dark);
+        }
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
+        .secondary-button {
+            background: #eaf1ff;
+            color: #174ea6;
+        }
 
+        .secondary-button:hover {
+            background: #dbe8ff;
+        }
 
-/* Buttons */
+        .delete-button {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
 
-button {
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    font-weight: bold;
-}
+        .delete-button:hover {
+            background: #ffe0e0;
+        }
 
-.secondary-button {
-    background: #2563eb;
-    color: white;
-}
+        .course-table {
+            margin-top: 18px;
+        }
 
-.secondary-button:hover {
-    background: #1d4ed8;
-}
+        .course-header,
+        .course-row {
+            display: grid;
+            grid-template-columns: minmax(180px, 2fr) 130px 150px 92px;
+            gap: 12px;
+            align-items: center;
+        }
 
-.delete-button {
-    background: #fee2e2;
-    color: #dc2626;
-}
+        .course-header {
+            padding: 0 0 9px;
+            font-weight: 700;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
 
+        .course-row {
+            margin-bottom: 12px;
+        }
 
-/* Courses */
+        .row-number {
+            display: none;
+        }
 
-.course-table {
-    margin-top: 20px;
-}
+        .result-card {
+            background: var(--dark);
+            color: #ffffff;
+            border-color: var(--dark);
+        }
 
-.course-header,
-.course-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr auto;
-    gap: 12px;
-    align-items: center;
-}
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
 
-.course-header {
-    font-weight: bold;
-    padding-bottom: 10px;
-    color: #6b7280;
-}
+        .result-item {
+            background: #1d2939;
+            border-radius: 12px;
+            padding: 20px 14px;
+            text-align: center;
+        }
 
-.course-row {
-    margin-bottom: 12px;
-}
+        .result-item span {
+            display: block;
+            color: #c7ced9;
+            margin-bottom: 4px;
+            font-size: 0.92rem;
+        }
 
+        .result-item strong {
+            font-size: 2rem;
+        }
 
-/* Results */
+        .result-item.highlight {
+            background: var(--primary);
+        }
 
-.result-card {
-    background: #111827;
-    color: white;
-}
+        .result-item.highlight span {
+            color: #ffffff;
+        }
 
-.result-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 20px;
-}
+        .status {
+            margin-top: 18px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-weight: 600;
+        }
 
-.result-item {
-    background: #1f2937;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
+        .status.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
 
-.result-item span {
-    display: block;
-    color: #9ca3af;
-    margin-bottom: 5px;
-}
+        .status.error {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
 
-.result-item strong {
-    font-size: 2rem;
-}
+        .grade-table {
+            margin-top: 18px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-.result-item.highlight {
-    background: #2563eb;
-}
+        .grade-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--border);
+        }
 
-.result-item.highlight span {
-    color: white;
-}
+        .grade-row:last-child {
+            border-bottom: 0;
+        }
 
+        .grade-heading {
+            background: #f3f5f9;
+            font-weight: 700;
+        }
 
-/* Grade table */
+        .formula {
+            margin-top: 18px;
+            padding: 16px;
+            background: #f7f9fc;
+            border-radius: 10px;
+            overflow-x: auto;
+            text-align: center;
+        }
 
-.grade-table {
-    margin-top: 20px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    overflow: hidden;
-}
+        .formula strong {
+            font-size: 1.05rem;
+        }
 
-.grade-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 10px 15px;
-    border-bottom: 1px solid #e5e7eb;
-}
+        .small-text {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
 
-.grade-row:last-child {
-    border-bottom: none;
-}
+        footer {
+            text-align: center;
+            padding: 36px 0 46px;
+            color: var(--muted);
+        }
 
-.grade-heading {
-    font-weight: bold;
-    background: #f3f4f6;
-}
+        @media (max-width: 760px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
+            .course-header {
+                display: none;
+            }
 
-/* Footer */
+            .course-row {
+                grid-template-columns: 1fr 1fr;
+                padding: 14px;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                margin-bottom: 12px;
+            }
 
-footer {
-    margin-top: 50px;
-    padding: 30px 0;
-    text-align: center;
-    color: #6b7280;
-}
+            .course-row .course-name-wrapper {
+                grid-column: 1 / -1;
+            }
 
+            .delete-button {
+                width: 100%;
+            }
 
-/* Mobile */
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-@media (max-width: 650px) {
+        @media (max-width: 460px) {
+            .container {
+                width: min(100% - 20px, 980px);
+            }
 
-    .header h1 {
-        font-size: 1.8rem;
-    }
+            .card,
+            .result-card {
+                padding: 18px;
+            }
 
-    .input-grid {
-        grid-template-columns: 1fr;
-    }
+            .course-row {
+                grid-template-columns: 1fr;
+            }
 
-    .section-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .course-header {
-        display: none;
-    }
-
-    .course-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .course-row input:first-child {
-        grid-column: 1 / -1;
-    }
-
-    .course-row select {
-        grid-column: 1;
-    }
-
-    .delete-button {
-        grid-column: 2;
-    }
-
-    .result-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+            .course-row .course-name-wrapper {
+                grid-column: auto;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="header">
+<header class="header">
     <div class="container">
-        <h1>CGPA Calculator</h1>
-        <p>Add your previous record and this semester's courses to see your updated CGPA.</p>
+        <h1>BRACU CGPA Calculator</h1>
+        <p>
+            Calculate your cumulative CGPA from your completed courses,
+            including fractional-credit courses such as 1.5-credit labs.
+        </p>
     </div>
-</div>
+</header>
 
-<div class="container">
+<main class="container">
 
-    <div class="card">
-        <h2>Previous Academic Record</h2>
-        <p class="section-description">Leave these at 0 if this is your first semester.</p>
+    <section class="card">
+        <h2>1. Total Completed Credits</h2>
+        <p class="description">
+            Enter the total credits you want to include in your CGPA calculation.
+            Then enter every completed course below with its credit hours and grade.
+        </p>
+
         <div class="input-grid">
             <div>
-                <label for="prevCGPA">Previous CGPA</label>
-                <input type="number" id="prevCGPA" min="0" max="4" step="0.01" placeholder="0.00">
-            </div>
-            <div>
-                <label for="prevCredits">Credits Completed</label>
-                <input type="number" id="prevCredits" min="0" step="0.5" placeholder="0">
+                <label for="expectedCredits">Total Completed Credits</label>
+                <input
+                    type="number"
+                    id="expectedCredits"
+                    min="0"
+                    step="0.5"
+                    placeholder="e.g. 48"
+                    inputmode="decimal"
+                >
             </div>
         </div>
-    </div>
 
-    <div class="card">
+        <div class="note">
+            Enter lab credits exactly as they appear on your academic record.
+            For example, a 1.5-credit lab should be entered as <strong>1.5</strong>.
+        </div>
+    </section>
+
+    <section class="card">
         <div class="section-header">
             <div>
-                <h2>This Semester's Courses</h2>
-                <p class="section-description">Add each course with its credit hours and grade.</p>
+                <h2>2. Completed Courses</h2>
+                <p class="description">
+                    Add every course included in the completed-credit total.
+                    The calculator uses credit-weighted grade points.
+                </p>
             </div>
-            <button id="addCourseBtn" class="secondary-button" type="button">+ Add Course</button>
+
+            <button
+                id="addCourseBtn"
+                class="primary-button"
+                type="button"
+            >
+                + Add Course
+            </button>
         </div>
 
         <div class="course-table">
             <div class="course-header">
                 <span>Course Name</span>
-                <span>Credits</span>
-                <span>Grade</span>
+                <span>Credit Hours</span>
+                <span>Grade / Grade Point</span>
                 <span></span>
             </div>
+
             <div id="courseList"></div>
         </div>
-    </div>
 
-    <div class="result-card">
-        <h2>Results</h2>
+        <p class="small-text">
+            You may leave the course name blank if you only want to calculate
+            from credit hours and grade points.
+        </p>
+    </section>
+
+    <section class="result-card">
+        <h2>CGPA Result</h2>
+
         <div class="result-grid">
             <div class="result-item">
-                <span>Semester Credits</span>
-                <strong id="semCredits">0.0</strong>
+                <span>Entered Credits</span>
+                <strong id="enteredCredits">0.00</strong>
             </div>
+
             <div class="result-item">
-                <span>Semester GPA</span>
-                <strong id="semGPA">0.00</strong>
+                <span>Calculated GPA</span>
+                <strong id="calculatedGPA">0.00</strong>
             </div>
+
             <div class="result-item highlight">
-                <span>New CGPA</span>
-                <strong id="newCGPA">0.00</strong>
+                <span>CGPA</span>
+                <strong id="calculatedCGPA">0.00</strong>
             </div>
         </div>
-    </div>
 
-    <div class="card">
-        <h2>Grading Scale</h2>
-        <p class="section-description">BRAC University's grade points, used by the calculator above.</p>
+        <div id="statusMessage" class="status success">
+            Add your completed courses to calculate CGPA.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Formula</h2>
+        <p class="description">
+            BRAC University calculates GPA using grade points weighted by course credits.
+        </p>
+
+        <div class="formula">
+            <strong>
+                CGPA = Σ(Grade Point × Credit Hours) ÷ Σ(Credit Hours)
+            </strong>
+        </div>
+
+        <p class="note">
+            Because this calculator uses every included course's credit and grade point,
+            you do not need to enter an existing CGPA. The calculator derives the CGPA
+            directly from the underlying course records.
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>BRACU Grade Point Scale</h2>
+
         <div class="grade-table">
             <div class="grade-row grade-heading">
-                <span>Letter Grade</span>
+                <span>Grade</span>
                 <span>Grade Point</span>
+                <span>Typical score range</span>
             </div>
-            <div class="grade-row"><span>A+ / A</span><span>4.00</span></div>
-            <div class="grade-row"><span>A-</span><span>3.70</span></div>
-            <div class="grade-row"><span>B+</span><span>3.30</span></div>
-            <div class="grade-row"><span>B</span><span>3.00</span></div>
-            <div class="grade-row"><span>B-</span><span>2.70</span></div>
-            <div class="grade-row"><span>C+</span><span>2.30</span></div>
-            <div class="grade-row"><span>C</span><span>2.00</span></div>
-            <div class="grade-row"><span>C-</span><span>1.70</span></div>
-            <div class="grade-row"><span>D+</span><span>1.30</span></div>
-            <div class="grade-row"><span>D</span><span>1.00</span></div>
-            <div class="grade-row"><span>F</span><span>0.00</span></div>
-        </div>
-    </div>
 
-</div>
+            <div class="grade-row">
+                <span>A+</span>
+                <span>4.00</span>
+                <span>97–100</span>
+            </div>
+            <div class="grade-row">
+                <span>A</span>
+                <span>4.00</span>
+                <span>90–96</span>
+            </div>
+            <div class="grade-row">
+                <span>A-</span>
+                <span>3.70</span>
+                <span>85–89</span>
+            </div>
+            <div class="grade-row">
+                <span>B+</span>
+                <span>3.30</span>
+                <span>80–84</span>
+            </div>
+            <div class="grade-row">
+                <span>B</span>
+                <span>3.00</span>
+                <span>75–79</span>
+            </div>
+            <div class="grade-row">
+                <span>B-</span>
+                <span>2.70</span>
+                <span>70–74</span>
+            </div>
+            <div class="grade-row">
+                <span>C+</span>
+                <span>2.30</span>
+                <span>65–69</span>
+            </div>
+            <div class="grade-row">
+                <span>C</span>
+                <span>2.00</span>
+                <span>60–64</span>
+            </div>
+            <div class="grade-row">
+                <span>C-</span>
+                <span>1.70</span>
+                <span>57–59</span>
+            </div>
+            <div class="grade-row">
+                <span>D+</span>
+                <span>1.30</span>
+                <span>55–56</span>
+            </div>
+            <div class="grade-row">
+                <span>D</span>
+                <span>1.00</span>
+                <span>52–54</span>
+            </div>
+            <div class="grade-row">
+                <span>D-</span>
+                <span>0.70</span>
+                <span>50–51</span>
+            </div>
+            <div class="grade-row">
+                <span>F</span>
+                <span>0.00</span>
+                <span>Below 50</span>
+            </div>
+        </div>
+
+        <p class="note">
+            Pass/Fail, Incomplete, and Withdrawal grades do not have ordinary
+            grade-point values and should not be entered as regular CGPA courses.
+        </p>
+    </section>
+
+</main>
 
 <footer>
-    CGPA Calculator
+    <div class="container">
+        BRACU CGPA Calculator
+    </div>
 </footer>
 
 <script>
-const GRADE_POINTS = {
-    "A+": 4.00, "A": 4.00, "A-": 3.70,
-    "B+": 3.30, "B": 3.00, "B-": 2.70,
-    "C+": 2.30, "C": 2.00, "C-": 1.70,
-    "D+": 1.30, "D": 1.00, "F": 0.00
-};
+    /*
+     * BRAC University grade points.
+     * A+ and A both carry 4.00 grade points.
+     */
+    const GRADE_POINTS = {
+        "A+": 4.00,
+        "A": 4.00,
+        "A-": 3.70,
+        "B+": 3.30,
+        "B": 3.00,
+        "B-": 2.70,
+        "C+": 2.30,
+        "C": 2.00,
+        "C-": 1.70,
+        "D+": 1.30,
+        "D": 1.00,
+        "D-": 0.70,
+        "F": 0.00
+    };
 
-const courseList = document.getElementById("courseList");
-const addCourseBtn = document.getElementById("addCourseBtn");
-const prevCGPAInput = document.getElementById("prevCGPA");
-const prevCreditsInput = document.getElementById("prevCredits");
+    const expectedCreditsInput =
+        document.getElementById("expectedCredits");
 
-/* Add one course row */
-function addCourseRow() {
-    const row = document.createElement("div");
-    row.className = "course-row";
+    const courseList =
+        document.getElementById("courseList");
 
-    const gradeOptions = Object.keys(GRADE_POINTS)
-        .map(g => `<option value="${g}">${g}</option>`)
-        .join("");
+    const addCourseBtn =
+        document.getElementById("addCourseBtn");
 
-    row.innerHTML = `
-        <input type="text" class="course-name" placeholder="Course name">
-        <input type="number" class="course-credit" min="0" step="0.5" placeholder="3">
-        <select class="course-grade">
-            <option value="">Grade</option>
-            ${gradeOptions}
-        </select>
-        <button class="delete-button" type="button">Remove</button>
-    `;
+    const enteredCreditsOutput =
+        document.getElementById("enteredCredits");
 
-    courseList.appendChild(row);
-    attachListeners(row);
-}
+    const calculatedGPAOutput =
+        document.getElementById("calculatedGPA");
 
-/* Attach listeners to a row's inputs and its delete button */
-function attachListeners(row) {
-    row.querySelectorAll("input, select").forEach(el => {
-        el.addEventListener("input", calculate);
-    });
+    const calculatedCGPAOutput =
+        document.getElementById("calculatedCGPA");
 
-    row.querySelector(".delete-button").addEventListener("click", () => {
-        row.remove();
-        calculate();
-    });
-}
+    const statusMessage =
+        document.getElementById("statusMessage");
 
-/* Calculate semester GPA and updated CGPA */
-function calculate() {
-    const rows = document.querySelectorAll(".course-row");
 
-    let semCredits = 0;
-    let semQualityPoints = 0;
+    /*
+     * Create the grade dropdown.
+     */
+    function createGradeOptions() {
+        return `
+            <option value="">Select grade</option>
+            ${Object.keys(GRADE_POINTS)
+                .map(grade =>
+                    `<option value="${grade}">
+                        ${grade} (${GRADE_POINTS[grade].toFixed(2)})
+                    </option>`
+                )
+                .join("")}
+        `;
+    }
 
-    rows.forEach(row => {
-        const credit = parseFloat(row.querySelector(".course-credit").value);
-        const grade = row.querySelector(".course-grade").value;
 
-        if (!isNaN(credit) && credit > 0 && grade in GRADE_POINTS) {
-            semCredits += credit;
-            semQualityPoints += credit * GRADE_POINTS[grade];
+    /*
+     * Add a new course row.
+     */
+    function addCourseRow() {
+        const row = document.createElement("div");
+        row.className = "course-row";
+
+        row.innerHTML = `
+            <div class="course-name-wrapper">
+                <input
+                    type="text"
+                    class="course-name"
+                    placeholder="e.g. CSE221"
+                    aria-label="Course name"
+                >
+            </div>
+
+            <div>
+                <input
+                    type="number"
+                    class="course-credit"
+                    min="0"
+                    step="0.5"
+                    placeholder="3 or 1.5"
+                    inputmode="decimal"
+                    aria-label="Course credit hours"
+                >
+            </div>
+
+            <div>
+                <select
+                    class="course-grade"
+                    aria-label="Course grade"
+                >
+                    ${createGradeOptions()}
+                </select>
+            </div>
+
+            <button
+                class="delete-button"
+                type="button"
+                aria-label="Remove course"
+            >
+                Remove
+            </button>
+        `;
+
+        courseList.appendChild(row);
+
+        row.querySelectorAll("input, select").forEach(element => {
+            element.addEventListener("input", calculateCGPA);
+            element.addEventListener("change", calculateCGPA);
+        });
+
+        row.querySelector(".delete-button")
+            .addEventListener("click", () => {
+                row.remove();
+                calculateCGPA();
+            });
+
+        calculateCGPA();
+    }
+
+
+    /*
+     * Calculate the weighted CGPA:
+     *
+     * CGPA =
+     *     Sum(Grade Point × Credit Hours)
+     *     --------------------------------
+     *          Sum(Credit Hours)
+     *
+     */
+    function calculateCGPA() {
+        const rows =
+            document.querySelectorAll(".course-row");
+
+        let totalCredits = 0;
+        let totalQualityPoints = 0;
+        let incompleteRows = 0;
+
+        rows.forEach(row => {
+            const credit =
+                parseFloat(
+                    row.querySelector(".course-credit").value
+                );
+
+            const grade =
+                row.querySelector(".course-grade").value;
+
+            const hasCredit =
+                !Number.isNaN(credit) && credit > 0;
+
+            const hasGrade =
+                grade !== "" && grade in GRADE_POINTS;
+
+            if (hasCredit && hasGrade) {
+                totalCredits += credit;
+                totalQualityPoints +=
+                    credit * GRADE_POINTS[grade];
+            }
+
+            /*
+             * A row with one of the two main fields entered
+             * but not the other is incomplete.
+             */
+            if (
+                (hasCredit && !hasGrade) ||
+                (!hasCredit && hasGrade)
+            ) {
+                incompleteRows++;
+            }
+        });
+
+        const cgpa =
+            totalCredits > 0
+                ? totalQualityPoints / totalCredits
+                : 0;
+
+        enteredCreditsOutput.textContent =
+            totalCredits.toFixed(2);
+
+        calculatedGPAOutput.textContent =
+            cgpa.toFixed(2);
+
+        calculatedCGPAOutput.textContent =
+            cgpa.toFixed(2);
+
+
+        /*
+         * Validate against the user's declared total credits.
+         */
+        const expectedCredits =
+            parseFloat(expectedCreditsInput.value);
+
+        if (
+            !Number.isNaN(expectedCredits) &&
+            expectedCredits >= 0
+        ) {
+            const difference =
+                Math.abs(expectedCredits - totalCredits);
+
+            if (difference < 0.001) {
+                statusMessage.className =
+                    "status success";
+
+                statusMessage.textContent =
+                    `✓ Credit total matches: ${totalCredits.toFixed(2)} credits.`;
+            } else {
+                statusMessage.className =
+                    "status error";
+
+                statusMessage.textContent =
+                    `Credit mismatch: you entered ${expectedCredits.toFixed(2)} `
+                    + `completed credits, but the course rows currently total `
+                    + `${totalCredits.toFixed(2)} credits.`;
+            }
+        } else if (incompleteRows > 0) {
+            statusMessage.className =
+                "status error";
+
+            statusMessage.textContent =
+                "Please complete the credit and grade fields for each course.";
+        } else if (totalCredits > 0) {
+            statusMessage.className =
+                "status success";
+
+            statusMessage.textContent =
+                "✓ CGPA calculated from the completed course records.";
+        } else {
+            statusMessage.className =
+                "status success";
+
+            statusMessage.textContent =
+                "Add your completed courses to calculate CGPA.";
         }
-    });
+    }
 
-    const semGPA = semCredits > 0 ? semQualityPoints / semCredits : 0;
 
-    const prevCGPA = parseFloat(prevCGPAInput.value) || 0;
-    const prevCredits = parseFloat(prevCreditsInput.value) || 0;
+    expectedCreditsInput.addEventListener(
+        "input",
+        calculateCGPA
+    );
 
-    const totalCredits = prevCredits + semCredits;
-    const totalQualityPoints = (prevCGPA * prevCredits) + semQualityPoints;
-    const newCGPA = totalCredits > 0 ? totalQualityPoints / totalCredits : 0;
+    addCourseBtn.addEventListener(
+        "click",
+        addCourseRow
+    );
 
-    document.getElementById("semCredits").textContent = semCredits.toFixed(1);
-    document.getElementById("semGPA").textContent = semGPA.toFixed(2);
-    document.getElementById("newCGPA").textContent = newCGPA.toFixed(2);
-}
 
-addCourseBtn.addEventListener("click", addCourseRow);
-prevCGPAInput.addEventListener("input", calculate);
-prevCreditsInput.addEventListener("input", calculate);
-
-/* Start with one empty row */
-addCourseRow();
+    /*
+     * Start with one empty course row.
+     */
+    addCourseRow();
 </script>
 
 </body>
